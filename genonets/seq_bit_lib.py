@@ -186,6 +186,19 @@ class AbstractBitSeqManipulator:
             # Also, do not include the mutant that results in the source sequence.
             neighbors.extend(self.getUniqueNeighbors(rsNeighbors, neighbors, sequence))
 
+        # # TODO:
+        # #   The sequences for which the reverse complement is the same as the sequence,
+        # #   a shift mutation can result in the source sequence being added to the list
+        # #   of neighbors. However, these are already eliminated in the previous code
+        # #   block. Then, is the following condition really necessary??
+        # if self.useRC:
+        #     # If the reverse complement of the given sequence has been
+        #     # added as a neighbor, remove it
+        #     try:
+        #         neighbors.remove(self.getReverseComplement(sequence))
+        #     except ValueError:
+        #         pass
+
         return neighbors
 
     # Depending on the shiftType, i.e., "left" or "right", returns the
@@ -198,16 +211,20 @@ class AbstractBitSeqManipulator:
             index = self.seqLength - 1
 
             # Get all left shift mutants
-            mutants = [self.mutAftrLftShift(source, index, target)
-                       for target in self.bitToLetterDict.keys()]
+            mutants = [
+                self.mutAftrLftShift(source, index, target)
+                for target in self.bitToLetterDict.keys()
+            ]
         else:  # Right shift
             # The letter index at which to perform the mutations is
             # '0' for a left shift
             index = 0
 
             # Get all right shift mutants
-            mutants = [self.mutateLetter(source, index, target)
-                       for target in self.bitToLetterDict.keys()]
+            mutants = [
+                self.mutateLetter(source, index, target)
+                for target in self.bitToLetterDict.keys()
+            ]
 
         return mutants
 
@@ -356,14 +373,12 @@ class AbstractBitSeqManipulator:
     def bitsToSeq(self, bitSequence):
         # k-mer length
         k = self.seqLength
-        # Code length
-        n = self.bitCodeLen
 
         # String to store the sequence. The initialization here has two
         # purposes: 1) To get the desired size, 2) To ensure there are
         # no ones, since left shifting ones at the left most index can
         # cause problems.
-        outputSequence = array('c', ["0" for i in range(k)])
+        outputSequence = array('c', ['0' for _ in range(k)])
 
         # For each n-bit sequence (in a k-mer occupying n*k bits in an
         # integer),
@@ -376,7 +391,7 @@ class AbstractBitSeqManipulator:
             # it in the correct index of the output sequence
             outputSequence[j] = self.bitToLetterDict[letter]
 
-            j = j - 1
+            j -= 1
 
         return outputSequence.tostring()
 

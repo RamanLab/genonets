@@ -8,12 +8,34 @@ Documentation, including tutorials and API documentation, is available `here <ht
 
 ----
 
+New in version 1.1.6
+~~~~~~~~~~~~~~~~~~~~
+
+Enhancement: The order in which genotype set names appear in the result file 'Genotype_set_ovelrap.txt', is now the
+same order in which genotype set names appear in the input file. The corresponding issue is reported
+`here <https://github.com/fkhalid/genonets/issues/11>`_.
+
+New in version 1.1.5
+~~~~~~~~~~~~~~~~~~~~
+
+Bug fix: The fix affects the results of Robustness analysis; only when Genonets is used with '-rc' or
+'--use_reverse_complements' options. The impact of this change is higher on genotype level results, but
+minimal on genotype set level results. The details of the issue can be found
+`here <https://github.com/fkhalid/genonets/issues/10>`_.
+
+New in version 1.1.3
+~~~~~~~~~~~~~~~~~~~~
+
+Bug fix: The fix affects the results of Evolvability, Accessibility, Neighbor abundance, Diversity index, and Overlap analyses,
+only when Genonets is used with '-rc' or '--use_reverse_complements' options. The impact of this change is higher on genotype
+level results, but minimal on genotype set level results. The details of the issue can be found
+`here <https://github.com/fkhalid/genonets/issues/9>`_.
+
 New in version 1.1.0
 ~~~~~~~~~~~~~~~~~~~~
 
 The public interface in ``genonets.genonets_interface.Genonets`` has been changed, i.e., several method signatures
 used in the previous versions are no longer valid. Please see the API documentation `here <http://ieu-genonets.uzh.ch/python_package>`_.
-
 
 New in version 1.0.7
 ~~~~~~~~~~~~~~~~~~~~
@@ -56,7 +78,7 @@ When trying to install genonets on a machine with ``Ubuntu 14.04 LTS`` that does
 Mac OS X El Capitan
 ~~~~~~~~~~~~~~~~~~~
 
-We highly recommend using ``virtualenv`` for installation on Mac OS X El Capitan.
+We highly recommend using ``virtualenv``, or better yet, ``Anaconda``, for installation on Mac OS X El Capitan.
 
 In case you do not already have ``virtualenv`` installed on your system, use the following command to install ``virtualenv``:
 

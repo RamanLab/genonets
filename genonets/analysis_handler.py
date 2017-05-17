@@ -13,6 +13,7 @@ import sys
 import json  # For proper list stringification
 
 from genonets_writer import Writer
+from genonets_filters import WriterFilter
 from path_functions import PathAnalyzer
 from landscape_functions import Landscape
 from overlap_functions import OverlapAnalyzer
@@ -77,8 +78,7 @@ class AnalysisHandler:
 
         # Flag to indicate whether or not the genotypes should be
         # considered double stranded, i.e., whether or not
-        # reverse complements should be used in evolvability
-        # computations.
+        # reverse complements should be used in various analyses
         self.isDoubleStranded = self.caller.cmdArgs.use_reverse_complements
 
         # If 'Evolvability' analysis has been requested, initialize
@@ -249,7 +249,9 @@ class AnalysisHandler:
         giant = self.caller.dominant_network(repertoire)
 
         # Construct a RobustnessAnalyzer object
-        robAnalyzer = RobustnessAnalyzer(giant, self.netBuilder)
+        robAnalyzer = RobustnessAnalyzer(giant,
+                                         self.netBuilder,
+                                         self.isDoubleStranded)
 
         # Compute repertoire robustness and set it as a network
         # attribute
@@ -301,8 +303,10 @@ class AnalysisHandler:
         evoTargets = [evoTuples[i][1] for i in range(len(evoTuples))]
 
         giant.vs["Evolvability"] = evoScores
-        giant.vs["Evolves_to_genotypes_in"] = [evoTargets[i].keys()
-                                               for i in range(len(evoTargets))]
+        giant.vs["Evolves_to_genotypes_in"] = [
+            evoTargets[i].keys()
+            for i in range(len(evoTargets))
+        ]
         giant.vs["Evolvability_targets"] = evoTargets
 
     def accessibility(self, repertoire):
@@ -393,9 +397,14 @@ class AnalysisHandler:
         if not self.overlapMatrix:
             # Create the overlap analyzer
             overlapAnalyzer = OverlapAnalyzer(self.repToGiantDict,
-                                              self.caller.genotype_sets())
+                                              self.caller.genotype_sets(),
+                                              self.bitManip,
+                                              self.isDoubleStranded,
+                                              WriterFilter.genotype_set_to_order)
 
-            # Compute overlap data
+            # Compute overlap data. Note: The list of genotype sets is returned from
+            # the function to make sure the order used inside the function is the one
+            # used for further calculations here.
             self.overlapMatrix, repertoires, overlapDict = overlapAnalyzer.getOverlapData()
 
             # If the overlap dict was populated
